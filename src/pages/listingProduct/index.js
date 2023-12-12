@@ -1,13 +1,17 @@
-import React, { useState,useEffect } from 'react';
-import { View, FlatList, Text, Image, StyleSheet, TextInput, TouchableOpacity,StatusBar, Alert  } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, FlatList, Text, Image, StyleSheet, TextInput, TouchableOpacity, StatusBar, Alert } from 'react-native';
 import axios from 'axios';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 
+import { NavigationProp, useNavigation, useRoute } from '@react-navigation/native';
 
 const ProductGrid = () => {
   const [searchText, setSearchText] = useState('');
-//  StatusBar.setBackgroundColor('#60C100');
+  
+  const navigation = useNavigation();
 
-const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState([]);
 
   useEffect(() => {
     // Fetch product data when the component mounts
@@ -26,47 +30,66 @@ const [products, setProducts] = useState([]);
     }
   };
 
-//    console.log('>>>>>>>>>>>>>>>>>>>>>>',products)
-//    Alert.alert(JSON.stringify(products))
+ 
+
+
+const handledetailsPage = (id) => {
+
+   console.log(id)
+
+   navigation.navigate('DetailsProduct', { ProductId : id });
+
+
+}
+
 
   const renderProductItem = ({ item }) => {
-  
-  return  (
 
-    <View style={styles.itemContainer}>
-      <Image source={{ uri:'https://akm-img-a-in.tosshub.com/indiatoday/images/photo_gallery/202304/342084443_915459969573602_7545109043687809979_n.jpg?VersionId=Mk7CwOrAnXUG0Xtj8tneLWwV9DgSQpgx&size=686' }} style={styles.itemImage} />
-      <Text style={styles.itemText}>{item.name}</Text>
-      <Text style={styles.itemText}>{item.price}</Text>
-      
-    </View>
-  ) }
+    return (
+
+      <TouchableOpacity  style={styles.itemContainer} onPress={ ()=> { handledetailsPage(item.sku) }}>
+      <View>
+        <Image source={{ uri: 'https://akm-img-a-in.tosshub.com/indiatoday/images/photo_gallery/202304/342084443_915459969573602_7545109043687809979_n.jpg?VersionId=Mk7CwOrAnXUG0Xtj8tneLWwV9DgSQpgx&size=686' }} style={styles.itemImage} />
+        
+        <Text style={styles.itemText}>{item.name}</Text>
+        <View style={{ flexDirection: 'row' }}>
+          <Text style={styles.itemText}>{'QRA'}</Text>
+          <Text style={styles.itemTextPrice}>{item.price}</Text>
+        </View>
+
+
+      </View>
+      </TouchableOpacity>
+    )
+  }
 
   useEffect(() => {
     // Set the background color of the status bar when the component mounts
-    StatusBar.setBackgroundColor('#60C100');
+    StatusBar.setBackgroundColor('#B7D635');
     StatusBar.setHidden(false);
   }, []);
-  
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => console.log('Back icon pressed')}>
-          {/* Add your back icon here */}
-          <Text>{'Back'}</Text>
-        </TouchableOpacity>
-        
+      <TouchableOpacity style={styles.addIcon} onPress={() => {
+              //navigation.goBack();
+            }}>
+              <Ionicons name="arrow-back-sharp" size={24} color={'#fff'} />
+            </TouchableOpacity>
+
         <TextInput
           style={styles.searchInput}
-          placeholder="Search products"
+          placeholder="Market Search products"
           placeholderTextColor="#fff"
           value={searchText}
           onChangeText={(text) => setSearchText(text)}
 
         />
-       
+
         <TouchableOpacity onPress={() => console.log('Filter icon pressed')}>
-          {/* Add your filter icon here */}
-          <Text>{'Filter'}</Text>
+          <MaterialCommunityIcons   name="filter-outline" size={24} color={'#fff'}   />
+          <Text style={{ color:'#fff' }}>{'Filter'}</Text>
         </TouchableOpacity>
       </View>
       <FlatList
@@ -82,17 +105,17 @@ const [products, setProducts] = useState([]);
 
 const styles = StyleSheet.create({
   container: {
-    height:'100%',
-    width:'100%',
-    backgroundColor:'#fff'
+    height: '100%',
+    width: '100%',
+    backgroundColor: '#fff'
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: 16,
-    paddingTop:30,
-    backgroundColor:'#60C100'
+    paddingTop: 30,
+    backgroundColor: '#B7D635'
   },
   searchInput: {
     flex: 1,
@@ -101,8 +124,8 @@ const styles = StyleSheet.create({
     borderColor: '#fff',
     borderRadius: 8,
     paddingHorizontal: 10,
-    margin:5,
-    color:'#fff'
+    margin: 5,
+    color: '#fff'
   },
   listContainer: {
     paddingHorizontal: 16,
@@ -111,10 +134,10 @@ const styles = StyleSheet.create({
   itemContainer: {
     flex: 1,
     margin: 4,
-   
+
     borderColor: '#ddd',
     padding: 0,
-    alignItems: 'center',
+
   },
   itemImage: {
     width: '100%',
@@ -124,7 +147,12 @@ const styles = StyleSheet.create({
   },
   itemText: {
     textAlign: 'left',
-    fontSize:12
+    fontSize: 12
+  },
+  itemTextPrice: {
+    color:'red',
+    marginLeft:5,
+    fontSize: 18
   },
 });
 

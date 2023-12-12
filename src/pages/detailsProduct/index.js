@@ -1,4 +1,5 @@
-import React from 'react';
+
+import React, { useEffect, useState } from 'react';
 import {
     View,
     Text,
@@ -7,10 +8,22 @@ import {
     TouchableOpacity,
     Share,
     ScrollView,
-    FlatList
+    FlatList,
+    TextInput
 } from 'react-native';
+import { NavigationProp, useNavigation, useRoute } from '@react-navigation/native';
+import axios from 'axios';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 
-const ProductDetails = ({ route }) => {
+const ProductDetails = () => {
+    const navigation = useNavigation();
+    const [searchText, setSearchText] = useState('');
+
+    const route = useRoute();
+    const ProductId = route.params?.ProductId ?? null;
+    const [products, setProducts] = useState([]);
+
     const product = {
         id: '1',
         name: 'Smartphone XYZ',
@@ -127,20 +140,61 @@ const ProductDetails = ({ route }) => {
     //   </TouchableOpacity>
     // </View>
 
+    useEffect(() => {
+
+        if (ProductId != null && ProductId != undefined) {
+            fetchProductsID(ProductId)
+        }
+    }, []);
+
+    const fetchProductsID = async (id) => {
+        try {
+            // Replace 'your_api_endpoint' with the actual endpoint of your API
+            const response = await axios.get(`https://www.testuatah.com/rest/V1/products/${id}`);
+
+            // Assuming your API response has a data property containing the product array
+            console.log(response.data)
+            setProducts(response.data);
+        } catch (error) {
+            console.error('Error fetching products:', error);
+        }
+    };
+
     return (
         <View style={styles.container}>
+            <View style={styles.header}>
+                <TouchableOpacity style={styles.addIcon} onPress={() => {
+                    navigation.goBack();
+                }}>
+                    <Ionicons name="arrow-back-sharp" size={24} color={'#fff'} />
+                </TouchableOpacity>
+
+                <TextInput
+                    style={styles.searchInput}
+                    placeholder="Market Search products"
+                    placeholderTextColor="#fff"
+                    value={searchText}
+                    onChangeText={(text) => setSearchText(text)}
+
+                />
+            </View>
             <ScrollView>
-                <Image source={{ uri: product.image }} style={styles.productImage} />
+                <Text style={styles.productName}>{products.name}</Text>
+                <View style={{ paddingTop: 8 }}>
+                    <Image source={{ uri: product.image }} style={styles.productImage} />
+                </View>
                 <View style={styles.productInfoContainer}>
-                    <Text style={styles.productName}>{product.name}</Text>
-                    <Text style={styles.productDescription}>{product.description}</Text>
-                    <Text style={styles.productPrice}>
-                        Price: ${product.price.toFixed(2)}
+                <Text style={styles.productPrice}>
+                        Price: ${products.price}
                     </Text>
+                    <Text style={styles.recentTitle}>Details:</Text>
+
+                    <Text style={styles.productDescription}>{products.sku}</Text>
+                  
                     {/* Add more product details as needed */}
 
                     <View style={styles.recentContainer}>
-                        <Text style={styles.recentTitle}>Recently Viewed</Text>
+                        <Text style={styles.youeTitle}>You may also like this</Text>
                         <FlatList
                             data={recentProducts}
                             keyExtractor={(item) => item.id}
@@ -157,14 +211,17 @@ const ProductDetails = ({ route }) => {
                             )}
                         />
                     </View>
-
                 </View>
             </ScrollView>
             <View style={styles.bottomContainer}>
                 <View style={styles.cartContainer}>
-                    <Text style={styles.totalText}>
-                        Total: ${product.price.toFixed(2)}
-                    </Text>
+                    <View style={{ borderWidth:1,padding:4 }}>
+                        <Text  style={styles.qtyText}> QTY  </Text>
+                        <Text style={styles.totalText}>
+                            1
+                        </Text>
+                    </View>
+
                     <TouchableOpacity
                         onPress={handleAddToCart}
                         style={styles.addToCartButton}>
@@ -179,24 +236,26 @@ const ProductDetails = ({ route }) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 0,
+
     },
     productImage: {
         aspectRatio: 1 / 1,
         resizeMode: 'cover',
     },
     productInfoContainer: {
-        marginTop: 16,
-        paddingLeft: 10,
+       
+        paddingLeft: 12,
         paddingRight: 10,
     },
     productName: {
-        fontSize: 24,
-        fontWeight: 'bold',
+        fontSize: 18,
+        paddingLeft: 10,
+        color: '#000'
+
     },
     productDescription: {
         fontSize: 16,
-        marginTop: 8,
+       
     },
     productPrice: {
         fontSize: 18,
@@ -226,18 +285,21 @@ const styles = StyleSheet.create({
     cartContainer: {
         marginTop: 16,
         flexDirection: 'row',
-        justifyContent: 'space-between',
+
         alignItems: 'center',
     },
     totalText: {
         fontSize: 18,
         fontWeight: 'bold',
+        textAlign:'center'
     },
     addToCartButton: {
-        backgroundColor: 'green',
-        padding: 12,
+        backgroundColor: '#B7D635',
+        padding: 18,
         borderRadius: 8,
+         width:'80%',
         alignItems: 'center',
+        marginLeft:12
     },
     addToCartButtonText: {
         color: 'white',
@@ -247,9 +309,9 @@ const styles = StyleSheet.create({
         marginTop: 16,
     },
     recentTitle: {
-        fontSize: 20,
+        fontSize: 18,
         fontWeight: 'bold',
-        marginBottom: 8,
+        color:'#000'
     },
     recentItemContainer: {
         marginRight: 12,
@@ -264,6 +326,34 @@ const styles = StyleSheet.create({
         marginTop: 8,
         textAlign: 'center',
     },
+    header: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        padding: 16,
+        paddingTop: 10,
+        backgroundColor: '#B7D635'
+    },
+    searchInput: {
+        flex: 1,
+        height: 40,
+        borderWidth: 1,
+        borderColor: '#fff',
+        borderRadius: 8,
+        paddingHorizontal: 10,
+        margin: 5,
+        color: '#fff'
+    },
+    qtyText:{
+        fontSize: 18,
+        color:'#B7D635',
+        textAlign:'center'
+    },
+    youeTitle:{
+        fontSize: 18,
+        marginBottom: 8,
+        color:'#000'
+    }
 });
 
 export default ProductDetails;
