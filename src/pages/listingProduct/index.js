@@ -3,12 +3,15 @@ import { View, FlatList, Text, Image, StyleSheet, TextInput, TouchableOpacity, S
 import axios from 'axios';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import AntDesign from 'react-native-vector-icons/AntDesign';
+
 
 import { NavigationProp, useNavigation, useRoute } from '@react-navigation/native';
+import { DimensionUtils } from '../../styles/dimension';
 
 const ProductGrid = () => {
   const [searchText, setSearchText] = useState('');
-  
+
   const navigation = useNavigation();
 
   const [products, setProducts] = useState([]);
@@ -30,35 +33,36 @@ const ProductGrid = () => {
     }
   };
 
- 
 
 
-const handledetailsPage = (id) => {
 
-   console.log(id)
+  const handledetailsPage = (id) => {
 
-   navigation.navigate('DetailsProduct', { ProductId : id });
+    //  console.log(id)
+
+    navigation.navigate('DetailsProduct', { ProductId: id });
 
 
-}
+  }
 
 
   const renderProductItem = ({ item }) => {
 
     return (
 
-      <TouchableOpacity  style={styles.itemContainer} onPress={ ()=> { handledetailsPage(item.sku) }}>
-      <View>
-        <Image source={{ uri: 'https://akm-img-a-in.tosshub.com/indiatoday/images/photo_gallery/202304/342084443_915459969573602_7545109043687809979_n.jpg?VersionId=Mk7CwOrAnXUG0Xtj8tneLWwV9DgSQpgx&size=686' }} style={styles.itemImage} />
-        
-        <Text style={styles.itemText}>{item.name}</Text>
-        <View style={{ flexDirection: 'row' }}>
-          <Text style={styles.itemText}>{'QRA'}</Text>
-          <Text style={styles.itemTextPrice}>{item.price}</Text>
+      <TouchableOpacity style={styles.itemContainer} onPress={() => { handledetailsPage(item.sku) }}>
+        <View>
+          <Image source={{ uri: 'https://akm-img-a-in.tosshub.com/indiatoday/images/photo_gallery/202304/342084443_915459969573602_7545109043687809979_n.jpg?VersionId=Mk7CwOrAnXUG0Xtj8tneLWwV9DgSQpgx&size=686' }} style={styles.itemImage} />
+          <View style={{ flexDirection: 'row' }}>
+            <View style={{ width:DimensionUtils(120) }}>
+              <Text style={styles.itemText} numberOfLines={1}>{item.name}</Text>
+              <Text style={styles.itemText}>{'QRA'}  <Text style={styles.itemTextPrice}>{item.price}</Text></Text>
+            </View>
+            <View style={{ paddingTop:10  }}>
+              <Ionicons name="cart-outline" size={30} color={'#000'} />
+            </View>
+          </View>
         </View>
-
-
-      </View>
       </TouchableOpacity>
     )
   }
@@ -72,11 +76,11 @@ const handledetailsPage = (id) => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-      <TouchableOpacity style={styles.addIcon} onPress={() => {
-              //navigation.goBack();
-            }}>
-              <Ionicons name="arrow-back-sharp" size={24} color={'#fff'} />
-            </TouchableOpacity>
+        <TouchableOpacity style={styles.addIcon} onPress={() => {
+          //navigation.goBack();
+        }}>
+          <Ionicons name="arrow-back-sharp" size={24} color={'#fff'} />
+        </TouchableOpacity>
 
         <TextInput
           style={styles.searchInput}
@@ -88,8 +92,8 @@ const handledetailsPage = (id) => {
         />
 
         <TouchableOpacity onPress={() => console.log('Filter icon pressed')}>
-          <MaterialCommunityIcons   name="filter-outline" size={24} color={'#fff'}   />
-          <Text style={{ color:'#fff' }}>{'Filter'}</Text>
+          <MaterialCommunityIcons name="filter-outline" size={24} color={'#fff'} />
+          <Text style={{ color: '#fff' }}>{'Filter'}</Text>
         </TouchableOpacity>
       </View>
       <FlatList
@@ -150,8 +154,8 @@ const styles = StyleSheet.create({
     fontSize: 12
   },
   itemTextPrice: {
-    color:'red',
-    marginLeft:5,
+    color: 'red',
+    marginLeft: 5,
     fontSize: 18
   },
 });

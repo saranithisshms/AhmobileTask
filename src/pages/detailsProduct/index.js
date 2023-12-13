@@ -15,6 +15,8 @@ import { NavigationProp, useNavigation, useRoute } from '@react-navigation/nativ
 import axios from 'axios';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import{ DimensionUtils } from '../../styles/dimension'
+
 
 const ProductDetails = () => {
     const navigation = useNavigation();
@@ -125,7 +127,9 @@ const ProductDetails = () => {
     };
 
     const handleAddToCart = () => {
-        console.log('Add to cart button pressed');
+        navigation.navigate('CartPage');
+
+       // console.log('Add to cart button pressed');
         // Implement add to cart functionality
     };
 
@@ -184,9 +188,9 @@ const ProductDetails = () => {
                     <Image source={{ uri: product.image }} style={styles.productImage} />
                 </View>
                 <View style={styles.productInfoContainer}>
-                <Text style={styles.productPrice}>
-                        Price: ${products.price}
-                    </Text>
+              <Text> QRA  <Text style={styles.productPrice}>
+                       {products.price}
+                    </Text> </Text>
                     <Text style={styles.recentTitle}>Details:</Text>
 
                     <Text style={styles.productDescription}>{products.sku}</Text>
@@ -201,13 +205,18 @@ const ProductDetails = () => {
                             horizontal={true}
                             showsHorizontalScrollIndicator={false}
                             renderItem={({ item }) => (
-                                <TouchableOpacity
-                                    style={styles.recentItemContainer}
-                                    onPress={() => console.log('Navigate to recent product details')}
-                                >
-                                    <Image source={{ uri: item.image }} style={styles.recentItemImage} />
-                                    <Text style={styles.recentItemName}>{item.name}</Text>
-                                </TouchableOpacity>
+                                <TouchableOpacity style={styles.itemContainer}>
+                                <View>
+                                  <Image source={{ uri: 'https://akm-img-a-in.tosshub.com/indiatoday/images/photo_gallery/202304/342084443_915459969573602_7545109043687809979_n.jpg?VersionId=Mk7CwOrAnXUG0Xtj8tneLWwV9DgSQpgx&size=686' }} style={styles.itemImage} />
+                                  <View style={{ flexDirection: 'row' }}>
+                                    <View>
+                                      <Text style={styles.itemText} numberOfLines={1}>{item.name}</Text>
+                                      <Text style={styles.itemText}>{'QRA'}  <Text style={styles.itemTextPrice}>{item.price}</Text></Text>
+                                    </View>
+                                    
+                                  </View>
+                                </View>
+                              </TouchableOpacity>
                             )}
                         />
                     </View>
@@ -238,8 +247,14 @@ const styles = StyleSheet.create({
         flex: 1,
 
     },
+    itemTextPrice: {
+        color: 'red',
+        marginLeft: 5,
+        fontSize: 12
+      },
     productImage: {
-        aspectRatio: 1 / 1,
+        height:500,
+        width:'100%',
         resizeMode: 'cover',
     },
     productInfoContainer: {
@@ -254,11 +269,12 @@ const styles = StyleSheet.create({
 
     },
     productDescription: {
+        paddingTop:2,
         fontSize: 16,
        
     },
     productPrice: {
-        fontSize: 18,
+        fontSize: 24,
         fontWeight: 'bold',
         marginTop: 8,
     },
@@ -309,7 +325,7 @@ const styles = StyleSheet.create({
         marginTop: 16,
     },
     recentTitle: {
-        fontSize: 18,
+        fontSize: 16,
         fontWeight: 'bold',
         color:'#000'
     },
@@ -352,8 +368,22 @@ const styles = StyleSheet.create({
     youeTitle:{
         fontSize: 18,
         marginBottom: 8,
+        fontWeight:'300',
         color:'#000'
-    }
+    },
+    itemContainer: {
+        flex: 1,
+        margin: 10,
+        borderColor: '#ddd',
+        padding: 0,
+    
+      },
+      itemImage: {
+        width: DimensionUtils(140),
+        height: 200,
+        resizeMode: 'cover',
+        marginBottom: 8,
+      },
 });
 
 export default ProductDetails;
