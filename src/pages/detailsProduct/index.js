@@ -15,7 +15,7 @@ import { NavigationProp, useNavigation, useRoute } from '@react-navigation/nativ
 import axios from 'axios';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
-import{ DimensionUtils } from '../../styles/dimension'
+import { DimensionUtils } from '../../styles/dimension'
 
 
 const ProductDetails = () => {
@@ -95,6 +95,31 @@ const ProductDetails = () => {
         },
     ];
 
+    const sizes = ['S', 'M', 'L', 'XL', 'XXL'];
+    const [selectedSize, setSelectedSize] = useState('S');
+
+    const handleSizeSelection = (size) => {
+        setSelectedSize(size);
+        // You can perform additional actions when a size is selected
+    };
+    const colors = [
+        { name: 'Red', hex: '#FF0000' },
+        { name: 'Green', hex: '#00FF00' },
+        { name: 'SkyBlue', hex: '#13EEC6' },
+        { name: 'Yellow', hex: '#FFFF00' },
+        { name: 'Purple', hex: '#800080' },
+    ];
+
+    const defaultColor = colors.find(color => color.name === 'SkyBlue');
+    const [selectedColor, setSelectedColor] = useState(defaultColor);
+
+    const handleColorSelection = (color) => {
+        setSelectedColor(color);
+        // You can perform additional actions when a color is selected
+    };
+
+
+
     const handleShare = async () => {
         try {
             const shareMessage = `Check out this awesome product: ${product.name}\nPrice: $${product.price}`;
@@ -129,7 +154,7 @@ const ProductDetails = () => {
     const handleAddToCart = () => {
         navigation.navigate('CartPage');
 
-       // console.log('Add to cart button pressed');
+        // console.log('Add to cart button pressed');
         // Implement add to cart functionality
     };
 
@@ -188,13 +213,54 @@ const ProductDetails = () => {
                     <Image source={{ uri: product.image }} style={styles.productImage} />
                 </View>
                 <View style={styles.productInfoContainer}>
-              <Text> QRA  <Text style={styles.productPrice}>
-                       {products.price}
+                    <Text> QRA  <Text style={styles.productPrice}>
+                        {products.price}
                     </Text> </Text>
-                    <Text style={styles.recentTitle}>Details:</Text>
 
+                    <View>
+                        <Text style={styles.label}>Select Size:{selectedSize}</Text>
+                        <View style={styles.sizeContainer}>
+                            {sizes.map((size) => (
+                                <TouchableOpacity
+                                    key={size}
+                                    onPress={() => handleSizeSelection(size)}
+                                    style={[styles.sizeButton, selectedSize === size && styles.selectedSizeButton]}
+                                >
+                                    <Text style={[styles.sizeText, selectedSize === size && styles.selectedSizeText]}>{size}</Text>
+                                </TouchableOpacity>
+                            ))}
+                        </View>
+                            <Text style={styles.selectedColorName}>Selected Color: {selectedColor.name}</Text>
+                        <View style={styles.colorContainer}>
+                            {colors.map((color) => (
+                                <TouchableOpacity
+                                    key={color.name}
+                                    onPress={() => handleColorSelection(color)}
+                                    style={[
+                                        styles.colorButton, { backgroundColor: color.hex },
+                                        selectedColor && selectedColor.name === color.name && styles.selectedColorButton,
+                                    ]}
+                                >
+                                </TouchableOpacity>
+                            ))}
+                        </View>
+                    </View>
+
+
+                    <Text style={styles.recentTitle}>Details:</Text>
                     <Text style={styles.productDescription}>{products.sku}</Text>
-                  
+
+
+                    <Text style={[styles.recentTitle,{paddingTop:10}]}>Shipping</Text>
+
+                    <View style={{ paddingLeft:50,marginTop:10}}>
+
+                    <Text style={{fontSize:14,color:'#000'}}>standand:as per selected time slot</Text>
+                    <Text style={{fontSize:14,color:'#2E991E'}}> Free delivery on the order above QAR 99</Text>
+
+
+                    </View>
+
                     {/* Add more product details as needed */}
 
                     <View style={styles.recentContainer}>
@@ -206,17 +272,17 @@ const ProductDetails = () => {
                             showsHorizontalScrollIndicator={false}
                             renderItem={({ item }) => (
                                 <TouchableOpacity style={styles.itemContainer}>
-                                <View>
-                                  <Image source={{ uri: 'https://akm-img-a-in.tosshub.com/indiatoday/images/photo_gallery/202304/342084443_915459969573602_7545109043687809979_n.jpg?VersionId=Mk7CwOrAnXUG0Xtj8tneLWwV9DgSQpgx&size=686' }} style={styles.itemImage} />
-                                  <View style={{ flexDirection: 'row' }}>
                                     <View>
-                                      <Text style={styles.itemText} numberOfLines={1}>{item.name}</Text>
-                                      <Text style={styles.itemText}>{'QRA'}  <Text style={styles.itemTextPrice}>{item.price}</Text></Text>
+                                        <Image source={{ uri: 'https://akm-img-a-in.tosshub.com/indiatoday/images/photo_gallery/202304/342084443_915459969573602_7545109043687809979_n.jpg?VersionId=Mk7CwOrAnXUG0Xtj8tneLWwV9DgSQpgx&size=686' }} style={styles.itemImage} />
+                                        <View style={{ flexDirection: 'row' }}>
+                                            <View>
+                                                <Text style={styles.itemText} numberOfLines={1}>{item.name}</Text>
+                                                <Text style={styles.itemText}>{'QRA'}  <Text style={styles.itemTextPrice}>{item.price}</Text></Text>
+                                            </View>
+
+                                        </View>
                                     </View>
-                                    
-                                  </View>
-                                </View>
-                              </TouchableOpacity>
+                                </TouchableOpacity>
                             )}
                         />
                     </View>
@@ -224,8 +290,8 @@ const ProductDetails = () => {
             </ScrollView>
             <View style={styles.bottomContainer}>
                 <View style={styles.cartContainer}>
-                    <View style={{ borderWidth:1,padding:4 }}>
-                        <Text  style={styles.qtyText}> QTY  </Text>
+                    <View style={{ borderWidth: 1, padding: 4 }}>
+                        <Text style={styles.qtyText}> QTY  </Text>
                         <Text style={styles.totalText}>
                             1
                         </Text>
@@ -245,20 +311,21 @@ const ProductDetails = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor:'#fff'
 
     },
     itemTextPrice: {
         color: 'red',
         marginLeft: 5,
         fontSize: 12
-      },
+    },
     productImage: {
-        height:500,
-        width:'100%',
+        height: 500,
+        width: '100%',
         resizeMode: 'cover',
     },
     productInfoContainer: {
-       
+
         paddingLeft: 12,
         paddingRight: 10,
     },
@@ -269,9 +336,9 @@ const styles = StyleSheet.create({
 
     },
     productDescription: {
-        paddingTop:2,
+        paddingTop: 2,
         fontSize: 16,
-       
+
     },
     productPrice: {
         fontSize: 24,
@@ -307,15 +374,15 @@ const styles = StyleSheet.create({
     totalText: {
         fontSize: 18,
         fontWeight: 'bold',
-        textAlign:'center'
+        textAlign: 'center'
     },
     addToCartButton: {
         backgroundColor: '#B7D635',
         padding: 18,
         borderRadius: 8,
-         width:'80%',
+        width: '80%',
         alignItems: 'center',
-        marginLeft:12
+        marginLeft: 12
     },
     addToCartButtonText: {
         color: 'white',
@@ -327,7 +394,7 @@ const styles = StyleSheet.create({
     recentTitle: {
         fontSize: 16,
         fontWeight: 'bold',
-        color:'#000'
+        color: '#000'
     },
     recentItemContainer: {
         marginRight: 12,
@@ -360,30 +427,99 @@ const styles = StyleSheet.create({
         margin: 5,
         color: '#fff'
     },
-    qtyText:{
+    qtyText: {
         fontSize: 18,
-        color:'#B7D635',
-        textAlign:'center'
+        color: '#B7D635',
+        textAlign: 'center'
     },
-    youeTitle:{
+    youeTitle: {
         fontSize: 18,
         marginBottom: 8,
-        fontWeight:'300',
-        color:'#000'
+        fontWeight: '300',
+        color: '#000'
     },
     itemContainer: {
         flex: 1,
         margin: 10,
         borderColor: '#ddd',
         padding: 0,
-    
-      },
-      itemImage: {
+
+    },
+    itemImage: {
         width: DimensionUtils(140),
         height: 200,
         resizeMode: 'cover',
         marginBottom: 8,
-      },
+    },
+
+    label: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        marginBottom: 5,
+    },
+    sizeContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    sizeButton: {
+        backgroundColor: '#e0e0e0',
+        paddingVertical: 10,
+        paddingHorizontal: 15,
+        borderRadius: 5,
+        marginRight: 10,
+    },
+    selectedSizeButton: {
+
+        borderColor: '#000',
+        borderWidth: 2, 
+    },
+    sizeText: {
+        fontSize: 14,
+        fontWeight: 'bold',
+        color: '#333',
+    },
+    selectedSizeText: {
+        color: '#000', 
+    },
+
+    label: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        marginBottom: 5,
+    },
+    colorContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingTop:10,
+        paddingBottom:10,
+    },
+    colorButton: {
+        height: 30,
+        width: 30,
+        borderRadius: 30,
+        marginRight: 10,
+       
+    },
+    selectedColorButton: {
+        borderColor: '#000',
+        borderWidth: 4, 
+        
+    },
+    colorText: {
+        fontSize: 14,
+        fontWeight: 'bold',
+        color: '#333',
+    },
+    selectedColorText: {
+        color: '#fff', 
+    },
+    selectedColorName: {
+        marginTop: 10,
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: '#333',
+    },
+
 });
 
 export default ProductDetails;

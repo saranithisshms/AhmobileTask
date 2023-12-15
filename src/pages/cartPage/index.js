@@ -7,11 +7,11 @@ import {
   TouchableOpacity,
   Image,
 } from 'react-native';
-import { Swipeable } from 'react-native-gesture-handler';
+import { ScrollView, Swipeable } from 'react-native-gesture-handler';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { NavigationProp, useNavigation, useRoute } from '@react-navigation/native';
-import{ DimensionUtils } from '../../styles/dimension'
+import { DimensionUtils } from '../../styles/dimension'
 
 const Cart = () => {
 
@@ -33,6 +33,7 @@ const Cart = () => {
       image:
         'https://images.pexels.com/photos/19090/pexels-photo.jpg?cs=srgb&dl=pexels-web-donut-19090.jpg&fm=jpg',
     },
+    
     // Add more cart items as needed
   ]);
 
@@ -140,28 +141,45 @@ const Cart = () => {
           </Text>
         </View>
       </View>
+      
+      
       <FlatList
         data={cartItems}
         keyExtractor={(item) => item.id}
         renderItem={renderCartItem}
         contentContainerStyle={styles.listContainer}
       />
-      <View style={styles.totalContainer}>
+      <View style={styles.totalContainer2}>
         <View style={{
           justifyContent: 'space-between',
           flexDirection: 'row'
         }}>
           <Text style={styles.totalsText}>Items Total</Text>
-          <Text style={styles.totalsText}>{totalCost}</Text>
+          <Text style={styles.totalsText}>QRA{totalCost}</Text>
         </View>
-        <View style={{
+        {/* <View style={{
           justifyContent: 'space-between',
           flexDirection: 'row',
 
         }}>
           <Text style={styles.totalsText}>Items Discount</Text>
           <Text style={styles.totalsText}>{'0'}</Text>
+        </View> */}
+        <View style={{
+          justifyContent: 'space-between',
+          flexDirection: 'row',
+
+        }}>
+          <Text style={[styles.totalsText,{fontWeight:'bold'}]}>Estimated Total</Text>
+          <Text style={[styles.totalsText,{fontWeight:'bold'}]}>QRA{totalCost}</Text>
         </View>
+        <Text style={{ fontSize:12,paddingTop:10 }}>Shipping charges wiil be calculated on the checkout Page</Text>
+
+      
+      </View>
+     
+      <View style={styles.totalContainer}>
+        
 
         <View style={{
           justifyContent: 'space-between',
@@ -183,7 +201,7 @@ const Cart = () => {
       </View>
 
 
-    </View>
+    </View >
   );
 };
 
@@ -240,10 +258,14 @@ const styles = StyleSheet.create({
     paddingBottom: 5,
   },
   totalContainer: {
-
-
     borderTopWidth: 1,
     borderTopColor: '#ddd',
+    marginTop: 8,
+    padding: 20,
+
+  },
+  totalContainer2: {
+  
     marginTop: 8,
     padding: 20,
 
@@ -261,12 +283,12 @@ const styles = StyleSheet.create({
 
   },
   header: {
-   
+
     padding: 16,
     paddingTop: 30,
     backgroundColor: '#B7D635',
     flexDirection: 'row',
-    justifyContent:'flex-start'
+    justifyContent: 'flex-start'
   },
   recentItemImage: {
     width: 80,
